@@ -27,3 +27,4 @@ async def authenticate():
         print(f"Logged in as: {auth_mgr.xsts_token.gamertag}")
 if __name__ == "__main__":
     asyncio.run(authenticate())
+
