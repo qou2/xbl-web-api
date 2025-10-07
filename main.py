@@ -2,12 +2,20 @@ import sys
 import os
 import time
 import asyncio
+import ssl
+import warnings
+
+# Disable SSL warnings and verification globally
+warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+ssl._create_default_https_context = ssl._create_unverified_context
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 import coloredlogs
 
 # Setup logging
 coloredlogs.install(level="DEBUG")
 
+import aiohttp
 from aiohttp import ClientSession
 from xbox.webapi.api.client import XboxLiveClient
 from xbox.webapi.authentication.manager import AuthenticationManager
@@ -33,7 +41,8 @@ load_dotenv(find_dotenv())
 
 # Connect to Xbox Live and set a global client variable
 async def authenticate(loop):
-    session = ClientSession(loop=loop)
+    # Create session with SSL verification disabled (fix for Windows SSL issues), although this doesnt really matter if theres no token
+    session = ClientSession(loop=loop, connector=aiohttp.TCPConnector(verify_ssl=False))
     tokens_file_path = os.getenv("XBL_TOKENS_PATH")
 
     # Init the AuthenticationManager with a ClientSession, client id & secret
