@@ -1,5 +1,5 @@
-# Quart's flask-patch (intended for extensions) adds a loop.sync_wait function used in QuartDecoratorProvider.
-import quart.flask_patch
+# Quart's flask-patch is no longer needed in Quart 0.19+
+# import quart.flask_patch
 from quart import Quart, jsonify, send_from_directory, request
 
 # Hypercorn (Quart ASGI webserver)
@@ -27,6 +27,16 @@ import main
 logger = LoggingProvider.getLogger("server")
 
 loop = asyncio.get_event_loop()
+
+# Add sync_wait method to loop (replacement for quart.flask_patch)
+# Using nest_asyncio to allow nested event loops on Windows
+import nest_asyncio
+nest_asyncio.apply()
+
+def sync_wait(future):
+    return loop.run_until_complete(future)
+loop.sync_wait = sync_wait
+
 logger.info("Using loop: %s" % str(loop))
 app = Quart(__name__, static_folder=None)
 xbl_client, session = loop.run_until_complete(main.authenticate(loop))
@@ -105,8 +115,8 @@ Routes(app, loop, xbl_client, cache, metrics)
 
 # Define routes for the homepage
 @app.route("/")
-def index():
-    return send_from_directory("static", "index.html")
+async def index():
+    return await send_from_directory("static", "index.html")
 
 
 @app.route("/readme")
