@@ -10,6 +10,7 @@
 
 All routes return JSON unless otherwise specified.
 
+
 ## Fixes in This Fork
 
 Original by [jcxldn](https://github.com/jcxldn). This fork fixes the entire auth flow for Xbox auth v2, as well as fixing deprecated Python libraries that cause the original to fail.
