@@ -1,6 +1,12 @@
 # xbl-web-api
 
 ![python3 badge](https://img.shields.io/badge/python-3.11-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Platform](https://img.shields.io/badge/platform-Windows-0078D6.svg)
+![Quart](https://img.shields.io/badge/Quart-0.19+-purple.svg)
+![Xbox Live API](https://img.shields.io/badge/Xbox%20Live-API%20v2-107C10.svg)
+![Original](https://img.shields.io/badge/original-jcxldn-blue.svg)
+![Fork Status](https://img.shields.io/badge/fork-maintained-success.svg)
 
 All routes return JSON unless otherwise specified.
 
