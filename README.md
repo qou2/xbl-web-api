@@ -4,7 +4,44 @@
 
 All routes return JSON unless otherwise specified.
 
-Original by jcxldn, this fork fixes the entire auth flow for xbox auth v2, aswell as fixing depreciated python libraries that cause the original to fail.
+## Fixes in This Fork
+
+Original by [jcxldn](https://github.com/jcxldn). This fork fixes the entire auth flow for Xbox auth v2, as well as fixing deprecated Python libraries that cause the original to fail.
+
+### Authentication Flow Fixes (Xbox Auth v2)
+
+#### SSL Certificate Issues (`main.py`)
+- Added SSL verification bypass for Windows systems where certificate validation fails
+- Implemented `aiohttp.TCPConnector(verify_ssl=False)` in ClientSession
+- Added global SSL context override for compatibility with Xbox Live authentication endpoints
+- These changes resolve `SSLError` and certificate verification failures that prevented authentication
+
+#### Manual Authentication Script (`manual_auth.py`)
+- Added new authentication script for initial token generation (although the command `xbox-authenticate` can still work sometimes)
+- Allows users to complete OAuth flow and generate initial `tokens.json` file
+
+### Deprecated Library Fixes
+
+#### Quart 0.19+ Compatibility (`server.py`)
+- Replaced deprecated `quart.flask_patch` with manual `nest_asyncio` implementation
+- `quart.flask_patch` is no longer available in Quart 0.19+
+- Manually implements `loop.sync_wait()` method required by QuartDecoratorProvider
+- `nest_asyncio` provides better Windows event loop handling for nested async operations
+- Fixed `index()` route to use async/await pattern consistently
+
+#### Type Hint Modernization (`routes/__init__.py`)
+- Corrected `register_batch` parameter type hint from `dict[Type]` to `List[Type]`
+- Parameter actually accepts a list of route classes, not a dictionary
+
+### Technical Details
+
+The original implementation failed due to:
+1. **SSL errors** when connecting to Xbox Live authentication servers on Windows
+2. **Import errors** from `quart.flask_patch` being removed in newer Quart versions
+3. **Missing initial authentication** - no way to generate the first `tokens.json` file (although again, `xbox-authenticate` can work in some cases)
+
+This fork resolves all these issues while maintaining backward compatibility with the existing codebase.
+
 
 ## Routes
 
